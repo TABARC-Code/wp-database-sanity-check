@@ -4,6 +4,9 @@
  * Plugin URI: https://github.com/TABARC-Code/wp-database-sanity-check
  * Description: Audits core WordPress database tables for orphaned rows, broken relationships and quietly wrong counts. Read only. No fixes. I am not your YOLO button.
  * Version: 1.0.0.11
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
+ * Text Domain: wp-database-sanity-check
  * Author: TABARC-Code
  * Author URI: https://github.com/TABARC-Code
  * License: GPL-3.0-or-later
@@ -71,9 +74,7 @@ if ( ! class_exists( 'WP_Database_Sanity_Check' ) ) {
             <div class="wrap">
                 <h1><?php esc_html_e( 'WP Database Sanity Check', 'wp-database-sanity-check' ); ?></h1>
                 <p>
-                    This is a structural audit of core WordPress tables.
-                    It looks for rows that point at nothing, relationships that no longer make sense,
-                    and counts that stopped matching reality years ago.
+                    <?php esc_html_e( 'This is a structural audit of core WordPress tables. It looks for rows that point at nothing, relationships that no longer make sense, and counts that stopped matching reality years ago.', 'wp-database-sanity-check' ); ?>
                 </p>
                 <p>
                     <a class="button button-secondary" href="<?php echo esc_url( $export_url ); ?>">
@@ -101,7 +102,7 @@ if ( ! class_exists( 'WP_Database_Sanity_Check' ) ) {
         }
 
         public function inject_plugin_list_icon_css() {
-            $icon_url = esc_url( $this->get_brand_icon_url() );
+            $icon_url = $this->get_brand_icon_url();
             ?>
             <style>
                 .wp-list-table.plugins tr[data-slug="wp-database-sanity-check"] .plugin-title strong::before {
@@ -121,7 +122,7 @@ if ( ! class_exists( 'WP_Database_Sanity_Check' ) ) {
 
         public function handle_export_json() {
             if ( ! current_user_can( 'manage_options' ) ) {
-                wp_die( 'No.' );
+                wp_die( esc_html__( 'You do not have permission to export this data.', 'wp-database-sanity-check' ), '', array( 'response' => 403 ) );
             }
 
             check_admin_referer( 'wdsc_export_json' );
@@ -212,29 +213,29 @@ if ( ! class_exists( 'WP_Database_Sanity_Check' ) ) {
             ?>
             <table class="widefat striped" style="max-width:900px;">
                 <tbody>
-                    <tr><th>Orphaned postmeta rows</th><td><?php echo esc_html( $audit['postmeta_orphans'] ); ?></td></tr>
-                    <tr><th>Attachments with missing parent</th><td><?php echo esc_html( $audit['attachments_missing_parent'] ); ?></td></tr>
-                    <tr><th>Revisions with missing parent</th><td><?php echo esc_html( $audit['revisions_missing_parent'] ); ?></td></tr>
-                    <tr><th>Orphaned commentmeta rows</th><td><?php echo esc_html( $audit['commentmeta_orphans'] ); ?></td></tr>
-                    <tr><th>Comments linked to missing posts</th><td><?php echo esc_html( $audit['comments_missing_posts'] ); ?></td></tr>
-                    <tr><th>Term relationships missing posts</th><td><?php echo esc_html( $audit['term_relationships_missing_posts'] ); ?></td></tr>
-                    <tr><th>Term taxonomy rows missing terms</th><td><?php echo esc_html( $audit['term_taxonomy_missing_terms'] ); ?></td></tr>
-                    <tr><th>Term count mismatches</th><td><?php echo esc_html( $audit['term_count_mismatches'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Orphaned postmeta rows', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['postmeta_orphans'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Attachments with missing parent', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['attachments_missing_parent'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Revisions with missing parent', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['revisions_missing_parent'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Orphaned commentmeta rows', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['commentmeta_orphans'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Comments linked to missing posts', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['comments_missing_posts'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Term relationships missing posts', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['term_relationships_missing_posts'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Term taxonomy rows missing terms', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['term_taxonomy_missing_terms'] ); ?></td></tr>
+                    <tr><th><?php esc_html_e( 'Term count mismatches', 'wp-database-sanity-check' ); ?></th><td><?php echo esc_html( $audit['term_count_mismatches'] ); ?></td></tr>
                 </tbody>
             </table>
             <?php
         }
 
         private function render_post_checks( $audit ) {
-            echo '<p>These issues usually come from deleted posts, imports, or plugins that never cleaned up after themselves.</p>';
+            echo '<p>' . esc_html__( 'These issues usually come from deleted posts, imports, or plugins that never cleaned up after themselves.', 'wp-database-sanity-check' ) . '</p>';
         }
 
         private function render_comment_checks( $audit ) {
-            echo '<p>Comment and commentmeta problems rarely break anything immediately, but they add noise and waste space.</p>';
+            echo '<p>' . esc_html__( 'Comment and commentmeta problems rarely break anything immediately, but they add noise and waste space.', 'wp-database-sanity-check' ) . '</p>';
         }
 
         private function render_taxonomy_checks( $audit ) {
-            echo '<p>Taxonomy mismatches can cause incorrect counts, broken archives and confusing admin behaviour.</p>';
+            echo '<p>' . esc_html__( 'Taxonomy mismatches can cause incorrect counts, broken archives and confusing admin behaviour.', 'wp-database-sanity-check' ) . '</p>';
         }
     }
 
