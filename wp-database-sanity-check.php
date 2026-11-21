@@ -111,7 +111,7 @@ if ( ! class_exists( 'WP_Database_Sanity_Check' ) ) {
                     width: 18px;
                     height: 18px;
                     margin-right: 6px;
-                    background-image: url('<?php echo $icon_url; ?>');
+                    background-image: url('<?php echo esc_url( $icon_url ); ?>');
                     background-repeat: no-repeat;
                     background-size: contain;
                 }
